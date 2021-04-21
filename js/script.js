@@ -1,27 +1,5 @@
-/* 
-    There is no way I am finishing this. This will act as a proof of concept.
-
-    Game Title: Earthling
-    Game Type: RPG
-    Game Premise: Humans vs an Invading Alien AI
-        A malicious Alien AI has made it's way to Earth to rid the planet of inteligent life and to gather all mineral resources to
-        support their growth as a species... you know, the usual.
-
-        Most humans are no match for these metalbound AI Humonoids, however there are a select few who can harness sacred earthly
-        forces... I think you see where this is going. 
-        
-        You are one of a select few who have kept their power a secret to the majority of the population, except those who also 
-        share these rare abilities. During the early ages of humanity there were civilizations who were more intune with the 
-        connection between the spiritual, natural earthly forces and the human body, and these people passed on methods to help 
-        develop and control that connection - some might call it magic. Of course, because of jealousy, fear and pure greed, 
-        there developed a faction of humans who banded together to oppressed those with powers after a major natural disaster 
-        wiped out a majority of those with powers. Throughout the ages, the oppression became so great that today there only 
-        remain a small fraction of the population who have or know that they have powers, and even fewer who have access to the 
-        ancient teachings of development and control over said powers.
-*/
-
 class Earthling {
-    constructor(name, attacks, initialHealth, defense, agility, mainElement){
+    constructor(name, mainElement, attacks, initialHealth, defense, agility){
         this._name = name;
         this._attacks = attacks;
         this._health = initialHealth;
@@ -50,8 +28,21 @@ class Earthling {
         return this._mainElement;
     }
 
+    set health(health){
+        this._health = health;
+    }
+
     set agility(num){
         this._agility = num;
+    }
+
+    isAttackedBy(dmg){
+        this.health -= dmg;
+    }
+
+    useAttack(attack){
+        console.log(this.attacks[attack], "<--- attack")
+        return this.attacks[attack];
     }
 }
 
@@ -85,7 +76,31 @@ class Alien {
         return this._mainElement;
     }
 
+    set health(health){
+        this._health = health;
+    }
+
     set agility(num){
         this._agility = num;
     }
+
+    isAttackedBy(dmg){
+        this.health -= dmg;
+    }
+}
+
+// Lets build a fighting interaction between an Earthling and Alien
+const player1 = new Earthling("Ragnarock", "Electric", { windPush: 10, brushFire: 20, staticCharge: 40 }, 100, 50, 45);
+const puddy = new Alien("CopperTop", "Soft Body", { rocketPunch: 15, plasmaShot: 35, speedAttack: 25 }, 100, 50, 35);
+const playGameBtn = document.querySelector("#startGame");
+const attack = document.querySelector("#attack");
+
+console.log(player1);
+player1.useAttack("windPush");
+
+playGameBtn.addEventListener("click", () => fightSession(player1, puddy));
+
+function fightSession(player, alien){
+    alien.isAttackedBy(player.useAttack("brushFire"));
+    console.log(alien, "<--- alien attacked!")
 }
