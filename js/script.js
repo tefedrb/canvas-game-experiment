@@ -99,6 +99,38 @@ class AI {
     }
 }
 
+class Interaction {
+    constructor(player, comp){
+        this._player = player;
+        this._comp = comp;
+        this._turn = player.speed > comp.speed ? player : comp;
+    }
+
+    get player(){
+        return this._player;
+    }
+
+    get comp(){
+        return this._comp;
+    }
+
+    get turn(){
+        return this._turn;
+    }
+
+    fight(playerAttk, compAttk){
+        if(this.turn === this.player){
+            this.comp.isAttackedBy(playerAttk);
+        } else {
+            this.player.isAttackedBy(compAttk);
+        }
+    }
+
+    switchTurns(){
+        this.turn = this.turn === this.player ? this.comp : this.player;
+    }
+}
+
 // Lets build a fighting interaction between an Earthling and AI
 const player1 = new Earthling("Ragnarock", "Electric", { windPush: 10, brushFire: 20, staticCharge: 40 }, 100, 50, 45);
 const puddy = new AI("CopperTop", "Soft Body", { rocketPunch: 15, plasmaShot: 35, speedAttack: 25 }, 100, 50, 35);
@@ -110,11 +142,9 @@ player1.useAttack("windPush");
 
 playGameBtn.addEventListener("click", () => fightSession(player1, puddy));
 
-function turn(player, ai){
-    if(player.speed > ai.speed){
-        ai.isAttackedBy(player.useAttack("brushFire"));
-    }
-    if(ai.speed > player.speed){
-        player.isAttackedBy(ai.useRandomAttack());
-    }
+function round(player, ai){
+    const interaction = new Interaction(player, ai);
+    interaction.fight(player.useAttack("windPush"), ai.useRandomAttack());
+    interaction.switchTurns();
+    interaction.fight(player.useAttack("windPush"), ai.useRandomAttack());
 }
